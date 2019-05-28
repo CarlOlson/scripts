@@ -1,0 +1,252 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+SOUND = 0
+TIME = 1
+SOURCE = 2
+IMAGE = 3
+FOREIGN_CURR = 4
+NATIVE_CURR = 5
+FOREIGN_PREV = 6
+NATIVE_PREV = 7
+FOREIGN_NEXT = 8
+NATIVE_NEXT = 9
+
+CLOSING_PAIRS = DATA.read.split("\n").map do |pair|
+  Regexp.new("\\#{pair[0]}.*?\\#{pair[1]}")
+end
+
+class String
+  def remove_parens!
+    CLOSING_PAIRS.each do |regex|
+      self.gsub!(regex, '')
+    end
+    self.strip!
+  end
+end
+
+lines = $stdin.read.split("\n")
+lines.map! { |line| line.split(',', -1) }
+
+ARGV.each do |arg|
+  case arg
+  when 'uniq' then lines.uniq! { |line| line[FOREIGN_CURR] }
+  when 'sort' then lines.sort! { |line| line[FOREIGN_CURR] }
+  when 'paren' then lines.each { |line| line[FOREIGN_CURR..-1].each(&:remove_parens!) }
+  when 'jpn' then lines.select! { |line| line[FOREIGN_CURR] =~ /[\u4e00-\u9faf]/ }
+  end
+end
+
+puts lines.map { |line| line.join(',') }.join("\n")
+
+__END__
+()
+<>
+[]
+{}
+«»
+༺༻
+༼༽
+᚛᚜
+‹›
+⁅⁆
+⁽⁾
+₍₎
+∈∋
+∊∍
+∌∉
+∕⧵
+∠⦣
+∢⦠
+∼∽
+≃⋍
+≌≅
+≓≒
+≕≔
+≥≤
+≧≦
+≩≨
+≫≪
+≯≮
+≱≰
+≳≲
+≵≴
+≷≶
+≹≸
+≻≺
+≽≼
+≿≾
+⊁⊀
+⊃⊂
+⊅⊄
+⊇⊆
+⊉⊈
+⊋⊊
+⊐⊏
+⊒⊑
+⊢⊣
+⊦⫞
+⊩⫣
+⊰⊱
+⊲⊳
+⊴⊵
+⊶⊷
+⊸⟜
+⋊⋉
+⋌⋋
+⋐⋑
+⋖⋗
+⋘⋙
+⋚⋛
+⋜⋝
+⋞⋟
+⋠⋡
+⋢⋣
+⋤⋥
+⋦⋧
+⋨⋩
+⋪⋫
+⋬⋭
+⋰⋱
+⋲⋺
+⋴⋼
+⋷⋾
+⋻⋳
+⋽⋶
+⌈⌉
+⌊⌋
+〈〉
+❨❩
+❪❫
+❬❭
+❮❯
+❰❱
+❲❳
+❴❵
+⟃⟄
+⟅⟆
+⟈⟉
+⟋⟍
+⟕⟖
+⟜⊸
+⟞⟝
+⟣⟢
+⟥⟤
+⟧⟦
+⟩⟨
+⟫⟪
+⟭⟬
+⟯⟮
+⦄⦃
+⦆⦅
+⦈⦇
+⦊⦉
+⦌⦋
+⦎⦏
+⦐⦍
+⦒⦑
+⦔⦓
+⦖⦕
+⦘⦗
+⦠∢
+⦤⦥
+⦨⦩
+⦪⦫
+⦬⦭
+⦮⦯
+⦸⊘
+⧁⧀
+⧅⧄
+⧐⧏
+⧒⧑
+⧕⧔
+⧙⧘
+⧛⧚
+⧩⧨
+⧸⧹
+⧼⧽
+⨫⨬
+⨭⨮
+⨴⨵
+⨼⨽
+⩤⩥
+⩹⩺
+⩻⩼
+⩽⩾
+⩿⪀
+⪁⪂
+⪃⪄
+⪅⪆
+⪇⪈
+⪉⪊
+⪋⪌
+⪍⪎
+⪏⪐
+⪑⪒
+⪓⪔
+⪕⪖
+⪗⪘
+⪙⪚
+⪛⪜
+⪝⪞
+⪟⪠
+⪡⪢
+⪦⪧
+⪨⪩
+⪪⪫
+⪬⪭
+⪯⪰
+⪱⪲
+⪳⪴
+⪵⪶
+⪷⪸
+⪹⪺
+⪻⪼
+⪽⪾
+⪿⫀
+⫁⫂
+⫃⫄
+⫅⫆
+⫇⫈
+⫉⫊
+⫋⫌
+⫍⫎
+⫏⫐
+⫑⫒
+⫓⫔
+⫕⫖
+⫞⊦
+⫤⊨
+⫬⫭
+⫮∤
+⫸⫷
+⫺⫹
+⸂⸃
+⸄⸅
+⸉⸊
+⸌⸍
+⸜⸝
+⸠⸡
+⸢⸣
+⸤⸥
+⸦⸧
+⸨⸩
+〈〉
+《》
+「」
+『』
+【】
+〔〕
+〖〗
+〘〙
+〚〛
+﹙﹚
+﹛﹜
+﹝﹞
+﹤﹥
+（）
+＜＞
+［］
+｛｝
+｟｠
+｢｣
