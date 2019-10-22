@@ -10,10 +10,14 @@ json = JSON.parse(
   `ffprobe -i #{filename} -print_format json -show_chapters -loglevel error`
 )
 
-json['chapters'].each_with_index do |chapter, index|
-  start = chapter['start_time'].shellescape
-  stop = chapter['end_time'].shellescape
-  out = "chapter_%0.2d.ogg" % (index + 1)
+if json['chapters'].empty?
+  `ffmpeg -i #{filename} -vn -ac 2 -acodec libopus out.ogg`
+else
+  json['chapters'].each_with_index do |chapter, index|
+    start = chapter['start_time'].shellescape
+    stop = chapter['end_time'].shellescape
+    out = "chapter_%0.2d.ogg" % (index + 1)
 
-  `ffmpeg -i #{filename} -vn -ac 2 -acodec libopus -ss #{start} -to #{stop} #{out}`
+    `ffmpeg -i #{filename} -vn -ac 2 -acodec libopus -ss #{start} -to #{stop} #{out}`
+  end
 end
