@@ -1,0 +1,32 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i ruby -p ruby
+
+require 'shellwords'
+
+EXT = %w[pdf txt rtf] +
+      %w[avi mp4 mov mkv webm] +
+      %w[mp3 ogg flac aac]
+
+def squash_extensions filename
+  parts = filename.split('.')
+  base = parts.first
+  ext = parts.last
+  parts = parts[1..-1]
+  EXT.each { |ext| parts.delete(ext) }
+  [base, *parts, ext].join('.')
+end
+
+glob = ARGV[0] || '*'
+
+commands = []
+
+Dir.glob(glob).reject { |f| Dir.exist?(f) }.map do |filename|
+  next filename unless filename.count('.') > 1
+  new_name = squash_extensions(filename)
+  if new_name != filename
+    commands << "mv #{filename.shellescape} #{new_name.shellescape}"
+  end
+  new_name
+end
+
+puts commands
