@@ -1,0 +1,11 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p ffmpeg
+
+# start_threshold (db)
+# 0db max, -20db average, -80db min signal, -100db noise floor
+# stop_duration (seconds)
+
+exec ffmpeg \
+  -i $1 \
+  -af silenceremove=start_periods=1:stop_periods=-1:start_threshold=-45dB:stop_duration=1 \
+  ${@:2}
