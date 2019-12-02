@@ -1,0 +1,8 @@
+FROM jrottenberg/ffmpeg:3.4-ubuntu
+
+RUN env DEBIAN_FRONTEND=noninteractive \
+  apt-get install -y --no-install-recommends python3 python3-pip
+
+RUN pip3 install ffmpeg-normalize
+
+ENTRYPOINT ["ffmpeg-normalize"]

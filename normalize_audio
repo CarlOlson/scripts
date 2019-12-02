@@ -1,0 +1,25 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i fish -p fish
+
+if test (count $argv) != 2
+  echo "Must have only 2 arguments!"
+  exit 1
+end
+
+set --local SCRIPT_DIR (dirname (readlink -m (status --current-filename)))
+
+pushd $SCRIPT_DIR
+docker build \
+  --tag ffmpeg-normalize \
+  --file Dockerfile.ffmpeg-normalize .
+popd
+
+echo "Please wait... (sorry, no progress bar)"
+
+exec docker run \
+  --interactive \
+  --tty \
+  --rm \
+  --user (id -u):(id -g) \
+  --volume "$PWD":/tmp/workdir \
+  ffmpeg-normalize $argv[1] -c:a libopus -o $argv[2]
