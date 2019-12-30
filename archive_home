@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+sudo rsync \
+    --archive \
+    --verbose \
+    --delete \
+    --delete-excluded \
+    --cvs-exclude \
+    --filter=":- .gitignore" \
+    --filter="- .cache" \
+    --filter="- .opam" \
+    --filter="- .cargo" \
+    --filter="- .npm" \
+    --filter="- .rustup" \
+    --filter="- .local/share/Steam/package" \
+    --filter="- .local/share/Steam/steamapps" \
+    $HOME $1
