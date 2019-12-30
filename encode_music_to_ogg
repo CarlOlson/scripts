@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cd $HOME/Music
+
+fd .flac . --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
