@@ -1,0 +1,5 @@
+#!/usr/bin/env fish
+
+for album in (fd .flac $argv --exec echo "{//}" | sort | uniq)
+  metaflac --add-replay-gain $album/*.flac
+end
