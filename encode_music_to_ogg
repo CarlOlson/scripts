@@ -2,4 +2,6 @@
 
 cd $HOME/Music
 
+fd .flac . --exec mkdir -p ../opus/'{//}'
 fd .flac . --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
+fd cover.jpg . --exec cp '{}' ../opus/'{}'
