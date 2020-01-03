@@ -1,7 +1,16 @@
-#!/usr/bin/env bash
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p rename fd opusTools
 
 cd $HOME/Music
 
+# create folders
 fd .flac . --exec mkdir -p ../opus/'{//}'
+
+# convert music
 fd .flac . --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
+
+# move covers
 fd cover.jpg . --exec cp '{}' ../opus/'{}'
+
+# rename to windows compatible filenames
+fd . ../opus --exec rename -v 's/[<>:"\\|?*]/_/g' '{}'
