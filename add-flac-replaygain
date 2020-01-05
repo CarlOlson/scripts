@@ -1,5 +1,9 @@
 #!/usr/bin/env fish
 
 for album in (fd .flac $argv --exec echo "{//}" | sort | uniq)
-  metaflac --add-replay-gain $album/*.flac
+  set -l rg_count (metaflac --list $album/*.flac | rg REPLAYGAIN_ALBUM_GAIN | wc -l)
+  set -l flac_count (ls $album/*.flac | wc -l)
+  if test $rg_count -ne $flac_count
+    metaflac --add-replay-gain $album/*.flac
+  end
 end
