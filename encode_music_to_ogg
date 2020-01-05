@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i bash -p rename fd opusTools
+#! nix-shell -i bash -p rename fd opusTools imagemagick
 
 cd $HOME/Music
 
@@ -10,7 +10,7 @@ fd .flac . --exec mkdir -p ../opus/'{//}'
 fd .flac . --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
 
 # move covers
-fd cover.jpg . --exec cp '{}' ../opus/'{}'
+fd cover.jpg . --exec convert '{}' -thumbnail '500x500>' ../opus/'{}'
 
 # rename to windows compatible filenames
 fd . ../opus --exec rename -v 's/[<>:"\\|?*]/_/g' '{}'
