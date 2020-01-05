@@ -1,9 +1,11 @@
-#!/usr/bin/env fish
+#! /usr/bin/env nix-shell
+#! nix-shell -i fish -p fish flac fd
 
 for album in (fd .flac $argv --exec echo "{//}" | sort | uniq)
   set -l rg_count (metaflac --list $album/*.flac | rg REPLAYGAIN_ALBUM_GAIN | wc -l)
   set -l flac_count (ls $album/*.flac | wc -l)
   if test $rg_count -ne $flac_count
+    echo calculating $album
     metaflac --add-replay-gain $album/*.flac
   end
 end
