@@ -3,14 +3,22 @@
 
 cd $HOME/Music
 
+LAST_ENCODE=`date -r ~/opus +%Y-%m-%d\ %H:%M:%S`
+LAST_ENCODE=${LAST_ENCODE:-100y}
+echo changes from $LAST_ENCODE
+
 # create folders
 fd .flac . --exec mkdir -p ../opus/'{//}'
 
 # convert music
-fd .flac . --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
+fd .flac . \
+  --changed-within "$LAST_ENCODE" \
+  --exec opusenc --bitrate 128 '{}' ../opus/'{.}'.opus
 
 # move covers
-fd cover.jpg . --exec convert '{}' -thumbnail '500x500>' ../opus/'{}'
+fd cover.jpg . \
+  --changed-within "$LAST_ENCODE" \
+  --exec convert '{}' -thumbnail '500x500>' ../opus/'{}'
 
 # rename to windows compatible filenames
 fd . ../opus --exec rename -v 's/[<>:"\\|?*]/_/g' '{}'
